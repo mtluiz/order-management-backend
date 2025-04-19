@@ -1,0 +1,23 @@
+import { Module } from '@nestjs/common';
+import { AppController } from '@/infrastructure/http/controllers/app.controller';
+import { AppService } from '@/application/services/app.service';
+import { ConfigModule } from '@nestjs/config';
+import { ProjectModule } from '@/infrastructure/http/modules/project.module';
+import { ServiceOrderModule } from '@/infrastructure/http/modules/service-order.module';
+import { AuthModule } from '@/infrastructure/http/modules/auth.module';
+import { UserModule } from '@/infrastructure/http/modules/user.module';
+
+@Module({
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+    ProjectModule,
+    ServiceOrderModule,
+    AuthModule,
+    UserModule,
+  ],
+  controllers: [AppController],
+  providers: [AppService],
+})
+export class AppModule {}
