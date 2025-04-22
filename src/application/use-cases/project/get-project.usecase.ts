@@ -7,7 +7,6 @@ export class GetProjectUseCase {
   async execute(id: string): Promise<ProjectResponseDto> {
     const project = await this.projectRepo.findById(id);
     if (!project) throw new Error('Project not found');
-    
-    return ProjectResponseDto.fromEntity(project);
+    return project;
   }
 } 

@@ -9,7 +9,7 @@ export class ListServiceOrdersByProjectUseCase {
   ) {}
 
   async execute(projectId: string): Promise<ServiceOrderResponseDto[]> {
-    // Verify project exists
+
     const project = await this.projectRepo.findById(projectId);
     if (!project) {
       throw new Error('Project not found');

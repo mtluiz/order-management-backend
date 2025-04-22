@@ -6,6 +6,6 @@ export class ListProjectsUseCase {
 
   async execute(): Promise<ProjectResponseDto[]> {
     const projects = await this.projectRepo.findAll();
-    return ProjectResponseDto.fromEntities(projects);
+    return projects;
   }
 } 

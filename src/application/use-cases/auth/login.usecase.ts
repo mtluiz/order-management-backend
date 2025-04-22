@@ -10,13 +10,10 @@ export class LoginUseCase {
   ) {}
 
   async execute(dto: LoginDto): Promise<LoginResponseDto> {
-    // Find user by email
     const user = await this.userRepo.findByEmail(dto.email);
     if (!user) {
       throw new UnauthorizedException('Invalid credentials');
     }
-
-    // Validate password
     const isPasswordValid = await this.authService.comparePasswords(
       dto.password,
       user.password
@@ -26,7 +23,6 @@ export class LoginUseCase {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    // Generate JWT token
     return this.authService.generateToken(user);
   }
 } 

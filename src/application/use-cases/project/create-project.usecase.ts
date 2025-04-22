@@ -7,12 +7,12 @@ export class CreateProjectUseCase {
 
   async execute(dto: CreateProjectDto): Promise<ProjectResponseDto> {
     const project = new Project(
-      crypto.randomUUID(),
       dto.name,
-      dto.description,
+      '',
+      dto.description ?? ''
     );
     
     const created = await this.projectRepo.create(project);
-    return ProjectResponseDto.fromEntity(created);
+    return created;
   }
 } 

@@ -2,6 +2,7 @@ import { ServiceOrder } from '@/domain/entities/service-order.entity';
 import { IServiceOrderRepository } from '@/domain/repositories/service-order.repository.interface';
 import { IProjectRepository } from '@/domain/repositories/project.repository.interface';
 import { CreateServiceOrderDto, ServiceOrderResponseDto } from '@/interfaces/dtos/service-order.dto';
+import { randomUUID } from 'crypto';
 
 export class CreateServiceOrderUseCase {
   constructor(
@@ -17,7 +18,7 @@ export class CreateServiceOrderUseCase {
     }
 
     const serviceOrder = new ServiceOrder(
-      crypto.randomUUID(),
+      randomUUID(),
       dto.name,
       dto.category,
       dto.description || null,

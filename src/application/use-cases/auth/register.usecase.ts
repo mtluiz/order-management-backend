@@ -3,6 +3,7 @@ import { IUserRepository } from '@/domain/repositories/user.repository.interface
 import { CreateUserDto, UserResponseDto } from '@/interfaces/dtos/user.dto';
 import { AuthService } from '@/infrastructure/auth/auth.service';
 import { BadRequestException } from '@nestjs/common';
+import { randomUUID } from 'crypto';
 
 export class RegisterUseCase {
   constructor(
@@ -22,7 +23,7 @@ export class RegisterUseCase {
 
     // Create user
     const user = new User(
-      crypto.randomUUID(),
+      randomUUID(),
       dto.email,
       hashedPassword,
       dto.name,

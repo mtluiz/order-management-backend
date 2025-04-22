@@ -36,7 +36,7 @@ export class ServiceOrderResponseDto {
       createdDate: entity.createdDate,
       updatedDate: entity.updatedDate,
       isApproved: entity.isApproved,
-      project: entity.project ? ProjectResponseDto.fromEntity(entity.project) : undefined
+      project: entity.project
     };
   }
 

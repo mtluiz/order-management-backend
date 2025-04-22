@@ -12,6 +12,6 @@ export class UpdateProjectUseCase {
     existing.description = dto.description;
     
     const updated = await this.projectRepo.update(existing);
-    return ProjectResponseDto.fromEntity(updated);
+    return updated;
   }
 } 

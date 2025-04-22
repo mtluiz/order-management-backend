@@ -28,7 +28,6 @@ export class UserController {
     @Body() body: UpdateUserDto
   ): Promise<UserResponseDto> {
     try {
-      // Remove role from the DTO if present - only admins should be able to change roles
       const { role, ...updateData } = body;
       
       return await this.updateUserProfileUseCase.execute(user.id, updateData);
