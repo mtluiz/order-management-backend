@@ -10,22 +10,22 @@ export class ProjectRepository implements IProjectRepository {
   async create(project: Project): Promise<Project> {
     const data = await this.prisma.project.create({
       data: {
-        id: project.id,
         name: project.name,
         description: project.description,
       },
     });
-    return new Project(data.id, data.name, data.description ?? undefined);
+    return new Project(data.name, data.id, data.description ?? undefined, data.createdDate, data.updatedDate);
   }
 
   async findById(id: string): Promise<Project | null> {
     const data = await this.prisma.project.findUnique({ where: { id } });
-    return data ? new Project(data.id, data.name, data.description ?? undefined) : null;
+    return data ? new Project(data.name, data.id, data.description ?? undefined, data.createdDate, data.updatedDate) : null;
   }
 
   async findAll(): Promise<Project[]> {
     const list = await this.prisma.project.findMany();
-    return list.map(p => new Project(p.id, p.name, p.description ?? undefined));
+    console.log('list', list);
+    return list.map(p => new Project(p.name, p.id, p.description ?? undefined, p.createdDate, p.updatedDate));
   }
 
   async update(project: Project): Promise<Project> {
@@ -36,7 +36,7 @@ export class ProjectRepository implements IProjectRepository {
         description: project.description,
       },
     });
-    return new Project(data.id, data.name, data.description ?? undefined);
+    return new Project(data.name, data.id, data.description ?? undefined, data.createdDate, data.updatedDate);
   }
 
   async delete(id: string): Promise<void> {

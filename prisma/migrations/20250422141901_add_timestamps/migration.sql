@@ -1,0 +1,11 @@
+-- AlterTable
+ALTER TABLE `Project` ADD COLUMN `created_date` DATETIME(3) NULL DEFAULT CURRENT_TIMESTAMP(3),
+    ADD COLUMN `updated_date` DATETIME(3) NULL;
+
+-- AlterTable
+ALTER TABLE `ServiceOrder` MODIFY `created_date` DATETIME(3) NULL DEFAULT CURRENT_TIMESTAMP(3),
+    MODIFY `updated_date` DATETIME(3) NULL;
+
+-- AlterTable
+ALTER TABLE `User` ADD COLUMN `created_date` DATETIME(3) NULL DEFAULT CURRENT_TIMESTAMP(3),
+    ADD COLUMN `updated_date` DATETIME(3) NULL;

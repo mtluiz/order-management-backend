@@ -15,17 +15,21 @@ datasource db {
 }
 
 model User {
-  id       String  @id @default(uuid())
-  email    String  @unique
-  password String
-  name     String
-  role     String  @default("user") // Can be 'user' or 'admin'
+  id          String   @id @default(uuid())
+  email       String   @unique
+  password    String
+  name        String
+  role        String   @default("user")
+  createdDate DateTime? @default(now()) @map("created_date")
+  updatedDate DateTime? @updatedAt @map("updated_date")
 }
 
 model Project {
-  id          String         @id @default(uuid())
-  name        String
-  description String?
+  id           String         @id @default(uuid())
+  name         String
+  description  String?
+  createdDate  DateTime?       @default(now()) @map("created_date") 
+  updatedDate  DateTime?       @updatedAt @map("updated_date")
 
   serviceOrders ServiceOrder[]
 }
@@ -35,8 +39,8 @@ model ServiceOrder {
   name         String
   category     String
   description  String?
-  createdDate  DateTime @map("created_date")
-  updatedDate  DateTime @map("updated_date")
+  createdDate  DateTime? @default(now()) @map("created_date")
+  updatedDate  DateTime? @updatedAt @map("updated_date")
   isApproved   Boolean  @default(false) @map("is_approved")
 
   projectId    String   @map("project_id")
