@@ -53,6 +53,9 @@ This app helps you manage projects and their related service orders. You can:
    DATABASE_URL="mysql://username:password@localhost:3306/order_management"
    JWT_SECRET=your_jwt_secret_key
    JWT_EXPIRES_IN=1d
+   CORS_ORIGIN=*
+   CORS_METHODS=GET,HEAD,PUT,PATCH,POST,DELETE
+   CORS_CREDENTIALS=true
    ```
 
 3. **Set up the database**

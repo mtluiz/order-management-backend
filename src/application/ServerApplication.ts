@@ -4,6 +4,7 @@ import { FastifyAdapter, NestFastifyApplication } from "@nestjs/platform-fastify
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import { AppModule } from "@/infrastructure/http/modules/app.module";
 import { ApiServerConfig } from "@/infrastructure/config/ApiServerConfig";
+import { CorsConfig } from "@/infrastructure/config/CorsConfig";
 
 export class ServerApplication {
 
@@ -15,6 +16,12 @@ export class ServerApplication {
             AppModule,
             new FastifyAdapter()
         );
+
+        app.enableCors({
+            origin: CorsConfig.ORIGIN,
+            methods: CorsConfig.METHODS,
+            credentials: CorsConfig.CREDENTIALS
+        });
 
         await this.setupDocumentation(app);
         await app.listen(this.port, this.host);
@@ -40,5 +47,6 @@ export class ServerApplication {
 
     private log() {
         Logger.log(`Server is running on ${this.host}:${this.port}`);
+        Logger.log(`CORS enabled with origin: ${CorsConfig.ORIGIN}`);
     }
 }
