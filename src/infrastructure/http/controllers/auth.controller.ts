@@ -1,4 +1,4 @@
-import { Controller, Post, Body, HttpException, HttpStatus, UseGuards, Put } from '@nestjs/common';
+import { Controller, Post, Body, HttpException, HttpStatus, UseGuards, Put, HttpCode } from '@nestjs/common';
 import { RegisterUseCase } from '@/application/use-cases/auth/register.usecase';
 import { LoginUseCase } from '@/application/use-cases/auth/login.usecase';
 import { ChangePasswordUseCase } from '@/application/use-cases/auth/change-password.usecase';
@@ -24,6 +24,7 @@ export class AuthController {
   }
 
   @Post('login')
+  @HttpCode(HttpStatus.OK)
   async login(@Body() body: LoginDto): Promise<LoginResponseDto> {
     try {
       return await this.loginUseCase.execute(body);
