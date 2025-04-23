@@ -30,19 +30,17 @@ export class ServerApplication {
 
     private async setupDocumentation(app: NestFastifyApplication): Promise<void> {
 
-        const title = 'API';
-        const description = 'API description';
-        const version = '1.0';
-
         const config = new DocumentBuilder()
-            .setTitle(title)
-            .setDescription(description)
-            .setVersion(version)
+            .setTitle('Order Management API')
+            .setDescription('Comprehensive API for managing service orders and projects')
+            .setVersion('1.0')
+            .addTag('auth')
+            .addTag('projects')
+            .addTag('service-orders')
+            .addBearerAuth()
             .build();
-
         const document = SwaggerModule.createDocument(app, config);
-        SwaggerModule.setup('api', app, document);
-
+        SwaggerModule.setup('api/docs', app, document);
     }
 
     private log() {
