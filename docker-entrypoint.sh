@@ -1,6 +1,10 @@
 #!/bin/sh
 set -e
 
+# Debugging: List what's in the dist directory
+echo "📁 Checking dist directory contents..."
+find dist -type f | sort
+
 echo "🔄 Ensuring native modules are correctly built..."
 npm rebuild bcrypt --build-from-source
 
@@ -40,14 +44,15 @@ fi
 echo "✅ Database migrations applied successfully"
 
 echo "🚀 Starting application"
-# Try different ways to start the app
-if command -v nest >/dev/null 2>&1; then
-  echo "Using NestJS CLI"
-  exec nest start --watch
-elif [ -f ./dist/main.js ]; then
-  echo "Using Node directly"
+# Check which main file exists and run it
+if [ -f "./dist/main.js" ]; then
+  echo "✅ Using dist/main.js"
   exec node dist/main.js
+elif [ -f "./dist/src/main.js" ]; then
+  echo "✅ Using dist/src/main.js"
+  exec node dist/src/main.js
 else
-  echo "Using NPX to run NestJS"
-  exec npx nest start --watch
+  echo "❌ Could not find main.js file. Contents of dist directory:"
+  find dist -type f
+  exit 1
 fi 
