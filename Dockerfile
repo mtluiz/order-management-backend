@@ -43,6 +43,12 @@ RUN pnpm install --production
 # Copy built application from builder stage
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/prisma ./prisma
+COPY --from=builder /app/generated ./generated
+
+# Copy TypeScript configuration files
+COPY --from=builder /app/tsconfig.json ./
+COPY --from=builder /app/tsconfig.build.json ./
+COPY --from=builder /app/nest-cli.json ./
 
 # Rebuild bcrypt for this environment
 RUN npm rebuild bcrypt --build-from-source
