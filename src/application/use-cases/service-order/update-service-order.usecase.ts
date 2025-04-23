@@ -13,7 +13,7 @@ export class UpdateServiceOrderUseCase {
     // Update only provided fields
     if (dto.name !== undefined) existing.name = dto.name;
     if (dto.category !== undefined) existing.category = dto.category;
-    if (dto.description !== undefined) existing.description = dto.description || null;
+    if (dto.description !== undefined) existing.description = dto.description === '' ? null : dto.description;
     if (dto.isApproved !== undefined) existing.isApproved = dto.isApproved;
     
     // Always update the updatedDate
