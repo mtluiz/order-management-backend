@@ -8,6 +8,7 @@ import { JwtStrategy } from '@/infrastructure/auth/strategies/jwt.strategy';
 import { RegisterUseCase } from '@/application/use-cases/auth/register.usecase';
 import { LoginUseCase } from '@/application/use-cases/auth/login.usecase';
 import { ChangePasswordUseCase } from '@/application/use-cases/auth/change-password.usecase';
+import { GetProfileUseCase } from '@/application/use-cases/auth/get-profile.usecase';
 import { AuthController } from '@/infrastructure/http/controllers/auth.controller';
 import { JwtConfig } from '@/infrastructure/config/JwtConfig';
 
@@ -42,6 +43,12 @@ import { JwtConfig } from '@/infrastructure/config/JwtConfig';
       useFactory: (userRepo: UserRepository, authService: AuthService) => 
         new ChangePasswordUseCase(userRepo, authService),
       inject: [UserRepository, AuthService],
+    },
+    {
+      provide: GetProfileUseCase,
+      useFactory: (userRepo: UserRepository) =>
+        new GetProfileUseCase(userRepo),
+      inject: [UserRepository],
     },
   ],
   exports: [AuthService, JwtStrategy, PassportModule],
