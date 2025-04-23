@@ -5,7 +5,13 @@ import { GetServiceOrderUseCase } from '@/application/use-cases/service-order/ge
 import { UpdateServiceOrderUseCase } from '@/application/use-cases/service-order/update-service-order.usecase';
 import { DeleteServiceOrderUseCase } from '@/application/use-cases/service-order/delete-service-order.usecase';
 import { ListServiceOrdersByProjectUseCase } from '@/application/use-cases/service-order/list-service-orders-by-project.usecase';
-import { CreateServiceOrderDto, ServiceOrderResponseDto, UpdateServiceOrderDto } from '@/interfaces/dtos/service-order.dto';
+import { 
+  CreateServiceOrderDto, 
+  ListServiceOrdersQueryDto, 
+  PaginatedServiceOrderResponseDto, 
+  ServiceOrderResponseDto, 
+  UpdateServiceOrderDto 
+} from '@/interfaces/dtos/service-order.dto';
 import { JwtAuthGuard } from '@/infrastructure/auth/guards/jwt-auth.guard';
 import { RolesGuard } from '@/infrastructure/auth/guards/roles.guard';
 import { Roles } from '@/infrastructure/auth/decorators/roles.decorator';
@@ -32,12 +38,30 @@ export class ServiceOrderController {
   }
 
   @Get()
-  async list(@Query('projectId') projectId?: string): Promise<ServiceOrderResponseDto[]> {
+  async list(
+    @Query() query: ListServiceOrdersQueryDto
+  ): Promise<PaginatedServiceOrderResponseDto> {
     try {
+      const { skip, take, cursor, orderBy, name, category, description, isApproved, projectId } = query;
+      
+      const paginationParams = {
+        skip: skip ? parseInt(String(skip), 10) : undefined,
+        take: take ? parseInt(String(take), 10) : undefined,
+        cursor: cursor ? { id: cursor } : undefined,
+        orderBy: orderBy ? JSON.parse(orderBy) : undefined,
+        where: {
+          ...(name && { name: { contains: name } }),
+          ...(category && { category: { contains: category } }),
+          ...(description && { description: { contains: description } }),
+          ...(isApproved !== undefined && { isApproved: isApproved }),
+        }
+      };
+      
       if (projectId) {
-        return await this.listServiceOrdersByProject.execute(projectId);
+        return await this.listServiceOrdersByProject.execute(projectId, paginationParams);
       }
-      return await this.listServiceOrders.execute();
+      
+      return await this.listServiceOrders.execute(paginationParams);
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }

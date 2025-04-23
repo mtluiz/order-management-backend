@@ -22,10 +22,30 @@ export class ProjectRepository implements IProjectRepository {
     return data ? new Project(data.name, data.id, data.description ?? undefined, data.createdDate, data.updatedDate) : null;
   }
 
-  async findAll(): Promise<Project[]> {
-    const list = await this.prisma.project.findMany();
-    console.log('list', list);
-    return list.map(p => new Project(p.name, p.id, p.description ?? undefined, p.createdDate, p.updatedDate));
+  async findAll(params?: {
+    skip?: number;
+    take?: number;
+    cursor?: { id: string };
+    where?: any;
+    orderBy?: any;
+  }): Promise<{ data: Project[]; total: number }> {
+    const { skip, take, cursor, where, orderBy } = params || {};
+    
+    const [list, total] = await Promise.all([
+      this.prisma.project.findMany({
+        skip,
+        take,
+        cursor,
+        where,
+        orderBy,
+      }),
+      this.prisma.project.count({ where })
+    ]);
+    
+    return {
+      data: list.map(p => new Project(p.name, p.id, p.description ?? undefined, p.createdDate, p.updatedDate)),
+      total
+    };
   }
 
   async update(project: Project): Promise<Project> {

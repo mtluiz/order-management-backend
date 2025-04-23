@@ -43,4 +43,21 @@ export class ServiceOrderResponseDto {
   static fromEntities(entities: ServiceOrder[]): ServiceOrderResponseDto[] {
     return entities.map(entity => ServiceOrderResponseDto.fromEntity(entity));
   }
+}
+
+export class ListServiceOrdersQueryDto {
+  skip?: number;
+  take?: number;
+  cursor?: string;
+  orderBy?: string;
+  name?: string;
+  category?: string;
+  description?: string;
+  isApproved?: string;
+  projectId?: string;
+}
+
+export class PaginatedServiceOrderResponseDto {
+  data: ServiceOrderResponseDto[];
+  total: number;
 } 

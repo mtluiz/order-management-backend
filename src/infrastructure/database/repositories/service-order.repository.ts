@@ -39,25 +39,71 @@ export class ServiceOrderRepository implements IServiceOrderRepository {
     return data ? this.mapToEntity(data) : null;
   }
 
-  async findAll(): Promise<ServiceOrder[]> {
-    const list = await this.prisma.serviceOrder.findMany({
-      include: {
-        project: true
-      }
-    });
+  async findAll(params?: {
+    skip?: number;
+    take?: number;
+    cursor?: { id: string };
+    where?: any;
+    orderBy?: any;
+  }): Promise<{ data: ServiceOrder[]; total: number }> {
+    const { skip, take, cursor, where, orderBy } = params || {};
+    
+    const [list, total] = await Promise.all([
+      this.prisma.serviceOrder.findMany({
+        skip,
+        take,
+        cursor,
+        where,
+        orderBy,
+        include: {
+          project: true
+        }
+      }),
+      this.prisma.serviceOrder.count({ where })
+    ]);
 
-    return list.map(item => this.mapToEntity(item));
+    return {
+      data: list.map(item => this.mapToEntity(item)),
+      total
+    };
   }
 
-  async findByProject(projectId: string): Promise<ServiceOrder[]> {
-    const list = await this.prisma.serviceOrder.findMany({
-      where: { projectId },
-      include: {
-        project: true
-      }
-    });
+  async findByProject(
+    projectId: string,
+    params?: {
+      skip?: number;
+      take?: number;
+      cursor?: { id: string };
+      where?: any;
+      orderBy?: any;
+    }
+  ): Promise<{ data: ServiceOrder[]; total: number }> {
+    const { skip, take, cursor, where = {}, orderBy } = params || {};
+    
+    // Combine the project filter with any additional where conditions
+    const combinedWhere = {
+      ...where,
+      projectId
+    };
+    
+    const [list, total] = await Promise.all([
+      this.prisma.serviceOrder.findMany({
+        skip,
+        take,
+        cursor,
+        where: combinedWhere,
+        orderBy,
+        include: {
+          project: true
+        }
+      }),
+      this.prisma.serviceOrder.count({ where: combinedWhere })
+    ]);
 
-    return list.map(item => this.mapToEntity(item));
+    return {
+      data: list.map(item => this.mapToEntity(item)),
+      total
+    };
   }
 
   async update(serviceOrder: ServiceOrder): Promise<ServiceOrder> {
@@ -87,9 +133,11 @@ export class ServiceOrderRepository implements IServiceOrderRepository {
     
     if (data.project) {
       project = new Project(
+        data.project.name,
         data.project.id, 
-        data.project.name, 
-        data.project.description || undefined
+        data.project.description || undefined,
+        data.project.createdDate,
+        data.project.updatedDate
       );
     }
     

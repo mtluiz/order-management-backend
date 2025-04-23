@@ -1,6 +1,6 @@
 import { IServiceOrderRepository } from '@/domain/repositories/service-order.repository.interface';
 import { IProjectRepository } from '@/domain/repositories/project.repository.interface';
-import { ServiceOrderResponseDto } from '@/interfaces/dtos/service-order.dto';
+import { PaginatedServiceOrderResponseDto, ServiceOrderResponseDto } from '@/interfaces/dtos/service-order.dto';
 
 export class ListServiceOrdersByProjectUseCase {
   constructor(
@@ -8,14 +8,25 @@ export class ListServiceOrdersByProjectUseCase {
     private readonly projectRepo: IProjectRepository
   ) {}
 
-  async execute(projectId: string): Promise<ServiceOrderResponseDto[]> {
-
+  async execute(
+    projectId: string,
+    params?: {
+      skip?: number;
+      take?: number;
+      cursor?: { id: string };
+      where?: any;
+      orderBy?: any;
+    }
+  ): Promise<PaginatedServiceOrderResponseDto> {
     const project = await this.projectRepo.findById(projectId);
     if (!project) {
       throw new Error('Project not found');
     }
     
-    const serviceOrders = await this.serviceOrderRepo.findByProject(projectId);
-    return ServiceOrderResponseDto.fromEntities(serviceOrders);
+    const result = await this.serviceOrderRepo.findByProject(projectId, params);
+    return {
+      data: ServiceOrderResponseDto.fromEntities(result.data),
+      total: result.total
+    };
   }
 } 

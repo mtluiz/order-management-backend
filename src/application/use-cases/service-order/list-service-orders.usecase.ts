@@ -1,11 +1,20 @@
 import { IServiceOrderRepository } from '@/domain/repositories/service-order.repository.interface';
-import { ServiceOrderResponseDto } from '@/interfaces/dtos/service-order.dto';
+import { PaginatedServiceOrderResponseDto, ServiceOrderResponseDto } from '@/interfaces/dtos/service-order.dto';
 
 export class ListServiceOrdersUseCase {
   constructor(private readonly serviceOrderRepo: IServiceOrderRepository) {}
 
-  async execute(): Promise<ServiceOrderResponseDto[]> {
-    const serviceOrders = await this.serviceOrderRepo.findAll();
-    return ServiceOrderResponseDto.fromEntities(serviceOrders);
+  async execute(params?: {
+    skip?: number;
+    take?: number;
+    cursor?: { id: string };
+    where?: any;
+    orderBy?: any;
+  }): Promise<PaginatedServiceOrderResponseDto> {
+    const result = await this.serviceOrderRepo.findAll(params);
+    return {
+      data: ServiceOrderResponseDto.fromEntities(result.data),
+      total: result.total
+    };
   }
 } 
