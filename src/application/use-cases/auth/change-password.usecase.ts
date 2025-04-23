@@ -10,13 +10,12 @@ export class ChangePasswordUseCase {
   ) {}
 
   async execute(userId: string, dto: ChangePasswordDto): Promise<void> {
-    // Find user
+
     const user = await this.userRepo.findById(userId);
     if (!user) {
       throw new UnauthorizedException('User not found');
     }
 
-    // Validate old password
     const isPasswordValid = await this.authService.comparePasswords(
       dto.oldPassword,
       user.password
@@ -26,10 +25,8 @@ export class ChangePasswordUseCase {
       throw new UnauthorizedException('Current password is incorrect');
     }
 
-    // Hash new password
     const hashedPassword = await this.authService.hashPassword(dto.newPassword);
 
-    // Update user with new password
     user.password = hashedPassword;
     await this.userRepo.update(user);
   }

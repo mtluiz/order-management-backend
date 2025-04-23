@@ -11,11 +11,9 @@ export class UpdateUserProfileUseCase {
       throw new NotFoundException('User not found');
     }
     
-    // Update only provided fields
     if (dto.email) user.email = dto.email;
     if (dto.name) user.name = dto.name;
     
-    // Only admins can change roles, so this should be checked by the controller
     if (dto.role) user.role = dto.role;
     
     const updated = await this.userRepo.update(user);

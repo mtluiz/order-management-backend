@@ -11,7 +11,6 @@ export class CreateServiceOrderUseCase {
   ) {}
 
   async execute(dto: CreateServiceOrderDto): Promise<ServiceOrderResponseDto> {
-    // Verify project exists
     const project = await this.projectRepo.findById(dto.projectId);
     if (!project) {
       throw new Error('Project not found');

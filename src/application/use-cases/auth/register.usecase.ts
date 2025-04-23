@@ -12,16 +12,13 @@ export class RegisterUseCase {
   ) {}
 
   async execute(dto: CreateUserDto): Promise<UserResponseDto> {
-    // Check if user already exists
     const existingUser = await this.userRepo.findByEmail(dto.email);
     if (existingUser) {
       throw new BadRequestException('Email already in use');
     }
 
-    // Hash password
     const hashedPassword = await this.authService.hashPassword(dto.password);
 
-    // Create user
     const user = new User(
       randomUUID(),
       dto.email,
